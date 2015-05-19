@@ -1,14 +1,13 @@
-defmodule MonHandler do
-  require Logger
+defmodule MonHandler do  
   use GenServer
 
   @moduledoc """
   A minimal GenServer that monitors a given GenEvent handler.
 
-  This server will handle exits of the Handler and attempt to readd it
+  This server will handle exits of the Handler and attempt to re-add it
   to the manager when unexpected exits occur.
 
-  Exits for :normal, :shutdown and :swapped reasons will not attempt readds to
+  Exits for :normal, :shutdown or :swapped reasons will not attempt a re-add to
   the manager.
   """
 
@@ -39,12 +38,10 @@ defmodule MonHandler do
   end
 
   def handle_info({:gen_event_EXIT, _handler, {:swapped, new_handler, pid}}, config) do
-    Logger.warn("Stopping MonHandler for #{inspect config[:handler]}, handler has been swapped on manager for #{inspect new_handler} @ #{inspect pid}")
     {:stop, :handler_swapped, config}
   end
 
   def handle_info({:gen_event_EXIT, _handler, _reason}, config) do
-    Logger.info("MonHandler restarting handler #{inspect config[:handler]} on manager #{inspect config[:manager]} due to handler exit for error")
     :ok = start_handler(config)
     {:noreply, config}
   end
