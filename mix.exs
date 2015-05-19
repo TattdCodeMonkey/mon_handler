@@ -14,7 +14,9 @@ defmodule MonHandler.Mixfile do
   end
 
   defp deps do
-    []
+    [
+      {:mock, only: :test}
+    ]
   end
 
   defp package do
