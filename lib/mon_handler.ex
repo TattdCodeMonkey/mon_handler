@@ -39,12 +39,12 @@ defmodule MonHandler do
   end
 
   def handle_info({:gen_event_EXIT, _handler, {:swapped, new_handler, pid}}, config) do
-    Logger.warn("Stopping MonHandler for #{config[:handler]}, handler has been swapped on manager for #{new_handler} @ #{pid}")
+    Logger.warn("Stopping MonHandler for #{inspect config[:handler]}, handler has been swapped on manager for #{inspect new_handler} @ #{inspect pid}")
     {:stop, :handler_swapped, config}
   end
 
-  def handle_info({:gen_event_EXIT, _handler, reason}, config) do
-    Logger.info("MonHandler restarting handler #{config[:handler]} on manager #{config[:manager]} due to handler exit for #{inspect reason}")
+  def handle_info({:gen_event_EXIT, _handler, _reason}, config) do
+    Logger.info("MonHandler restarting handler #{inspect config[:handler]} on manager #{inspect config[:manager]} due to handler exit for error")
     :ok = start_handler(config)
     {:noreply, config}
   end
