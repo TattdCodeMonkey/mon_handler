@@ -3,6 +3,21 @@ defmodule MonHandlerTest do
 
   import Mock
 
+  test "add_mon_handler/2" do
+    with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
+      mgr = :a_manager
+      handler = :a_event_handler
+      MonHandler.add_mon_handler(mgr, handler)
+
+      assert called GenServer.start_link(MonHandler, [
+        manager: mgr,
+        handler: handler,
+        handler_args: [],
+        opts: []
+      ], [])
+    end
+  end
+
   test "add_mon_handler/3" do
     with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
       mgr = :a_manager
