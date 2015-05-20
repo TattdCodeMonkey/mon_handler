@@ -1,4 +1,4 @@
-defmodule MonHandler do  
+defmodule MonHandler do
   use GenServer
 
   @moduledoc """
@@ -10,6 +10,19 @@ defmodule MonHandler do
   Exits for :normal, :shutdown or :swapped reasons will not attempt a re-add to
   the manager.
   """
+
+  @doc """
+
+  """
+  @spec add_mon_handler(GenEvent.manager, GenEvent.handler, term) :: GenServer.on_start
+  def add_mon_handler(manager, event_handler, args \\ []) do
+    start_link(manager, event_handler, args, [])
+  end
+
+  @spec remove_handler(GenServer.server, term) :: term | {:error, term}
+  def remove_handler(server, args \\ []) do
+      GenServer.call(server, {:remove_handler, args})
+  end
 
   @doc """
 
@@ -44,6 +57,12 @@ defmodule MonHandler do
   def handle_info({:gen_event_EXIT, _handler, _reason}, config) do
     :ok = start_handler(config)
     {:noreply, config}
+  end
+
+  def handle_call({:remove_handler, args}, _from, config) do
+    result = GenEvent.remove_handler(config[:manager], config[:handler], args)
+    
+    {:stop, :normal, result, config}
   end
 
   defp start_handler(config) do
