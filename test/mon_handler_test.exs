@@ -12,8 +12,7 @@ defmodule MonHandlerTest do
       assert called GenServer.start_link(MonHandler, [
         manager: mgr,
         handler: handler,
-        handler_args: [],
-        opts: []
+        args: []
       ], [])
     end
   end
@@ -28,8 +27,7 @@ defmodule MonHandlerTest do
       assert called GenServer.start_link(MonHandler, [
         manager: mgr,
         handler: handler,
-        handler_args: args,
-        opts: []
+        args: args
       ], [])
     end
   end
@@ -52,50 +50,97 @@ defmodule MonHandlerTest do
     end
   end
 
-  test "start_link/2" do
-    with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
-      mgr = :a_manager
-      handler = :a_event_handler
-      MonHandler.start_link(mgr, handler)
+  test "get_config/2" do
+    mgr = :a_manager
+    handler = :a_event_handler
+    config = MonHandler.get_config(mgr,handler)
 
-      assert called GenServer.start_link(MonHandler, [
-        manager: mgr,
-        handler: handler,
-        handler_args: [],
-        opts: []
-      ], [])
-    end
+    assert config[:manager] == mgr
+    assert config[:handler] == handler
   end
 
-  test "start_link/3" do
+  test "get_config/3" do
+    mgr = :a_manager
+    handler = :a_event_handler
+    args = [an_arg: :test]
+    config = MonHandler.get_config(mgr,handler, args)
+
+    assert config[:manager] == mgr
+    assert config[:handler] == handler
+    assert config[:args] == args
+  end
+
+  test "get_config/3 -> start_link/1" do
     with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
       mgr = :a_manager
       handler = :a_event_handler
       args = [an_arg: :test]
-      MonHandler.start_link(mgr, handler, args)
+      MonHandler.get_config(mgr,handler, args)
+      |> MonHandler.start_link
 
       assert called GenServer.start_link(MonHandler, [
         manager: mgr,
         handler: handler,
-        handler_args: args,
-        opts: []
+        args: args
       ], [])
     end
   end
 
-  test "start_link/4" do
+  test "get_config/3 -> start_link/2" do
     with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
       mgr = :a_manager
       handler = :a_event_handler
       args = [an_arg: :test]
       opts = [name: HandlerMonitor]
-      MonHandler.start_link(mgr, handler, args, opts)
+
+      MonHandler.get_config(mgr,handler, args)
+      |> MonHandler.start_link opts
 
       assert called GenServer.start_link(MonHandler, [
         manager: mgr,
         handler: handler,
-        handler_args: args,
-        opts: opts
+        args: args
+      ], opts)
+    end
+  end
+
+  test "start_link/1" do
+    with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
+      mgr = :a_manager
+      handler = :a_event_handler
+      args = [an_arg: :test]
+
+      MonHandler.start_link([
+        manager: mgr,
+        handler: handler,
+        args: args
+      ])
+
+      assert called GenServer.start_link(MonHandler, [
+        manager: mgr,
+        handler: handler,
+        args: args
+      ], [])
+    end
+  end
+
+  test "start_link/2" do
+    with_mock GenServer, [start_link: fn(_mod, _args, _opts) -> {:ok, :a_pid} end] do
+      mgr = :a_manager
+      handler = :a_event_handler
+      args = [an_arg: :test]
+      opts = [name: HandlerMonitor]
+
+      MonHandler.start_link([
+        manager: mgr,
+        handler: handler,
+        args: args
+      ], opts)
+
+      assert called GenServer.start_link(MonHandler, [
+        manager: mgr,
+        handler: handler,
+        args: args
       ], opts)
     end
   end
@@ -109,14 +154,12 @@ defmodule MonHandlerTest do
       config = [
         manager: mgr,
         handler: handler,
-        handler_args: args,
-        opts: []
+        args: args
       ]
       MonHandler.init([
         manager: mgr,
         handler: handler,
-        handler_args: args,
-        opts: []
+        args: args
       ])
 
       assert called GenEvent.add_mon_handler(mgr, handler, args)
@@ -150,8 +193,7 @@ defmodule MonHandlerTest do
       config = [
         manager: mgr,
         handler: handler,
-        handler_args: args,
-        opts: []
+        args: args
       ]
 
       result = MonHandler.handle_info({:gen_event_EXIT, AnEventHandler, {{:an_error, "1234"}, []}}, config)
@@ -171,8 +213,7 @@ defmodule MonHandlerTest do
       config = [
         manager: mgr,
         handler: handler,
-        handler_args: [],
-        opts: []
+        args: []
       ]
       result = MonHandler.handle_call({:remove_handler, args},:a_pid, config)
 

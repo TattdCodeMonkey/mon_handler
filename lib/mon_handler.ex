@@ -9,7 +9,47 @@ defmodule MonHandler do
 
   Exits for :normal, :shutdown or :swapped reasons will not attempt a re-add to
   the manager.
+
+  ## Usage
+  ```elixir
+  iex(x)> {:ok, manager} = GenEvent.start_link
+  {:ok, #PID<X.X.X>}
+  iex(x)> {:ok, mon_han} = MonHandler.add_mon_handler(manager, YourEventHandler, event_handler_args)
+  {:ok, #PID<X.X.X>}
+  ```
+
+  With start_link
+
+  ```elixir
+  iex(x)> {:ok, manager} = GenEvent.start_link
+  {:ok, #PID<X.X.X>}
+  iex(x)> event_handler_args = []
+  []
+  iex(x)> config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
+  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  iex(x)> {:ok, mon_han} = MonHandler.start_link(config, gen_server_opts)
+  {:ok, #PID<X.X.X>}
+  ```
+
+  Within Supervisor
+  ```elixir
+  mgr_name = :event_manager
+  config = MonHandler.get_config(mgr_name, YourEventHandler)
+
+  children = [
+    worker(GenEvent, [[name: mgr_name]]),
+    worker(MonHandler, [config])
+  ]
+
+  opts = [strategy: :one_for_one, name: __MODULE__]
+
+  supervise children, opts
+  ```
   """
+
+  @type config :: [manager: GenEvent.manager,
+                   handler: GenEvent.handler,
+                   args: term]
 
   @doc """
   Starts GenServer and adds event handler to the provided GenEvet event manager.
@@ -29,7 +69,7 @@ defmodule MonHandler do
   """
   @spec add_mon_handler(GenEvent.manager, GenEvent.handler, term) :: GenServer.on_start
   def add_mon_handler(manager, event_handler, args \\ []) do
-    start_link(manager, event_handler, args, [])
+    start_link(get_config(manager, event_handler, args), [])
   end
 
   @doc """
@@ -64,13 +104,36 @@ defmodule MonHandler do
   ```elixir
   iex(x)> {:ok, manager} = GenEvent.start_link
   {:ok, #PID<X.X.X>}
-  iex(x)> {:ok, mon_han} = MonHandler.start_link(manager, YourEventHandler, event_handler_args, gen_server_opts)
+  iex(x)> event_handler_args = []
+  []
+  iex(x)> config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
+  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  iex(x)> {:ok, mon_han} = MonHandler.start_link(config, gen_server_opts)
   {:ok, #PID<X.X.X>}
   ```
   """
-  @spec start_link(GenEvent.manager, GenEvent.handler, term, GenServer.options) :: GenServer.on_start
-  def start_link(manager, event_handler, args \\ [], opts \\ []) do
-    GenServer.start_link(__MODULE__, [manager: manager, handler: event_handler, handler_args: args, opts: opts], opts)
+  @spec start_link(config, GenServer.options) :: GenServer.on_start
+  def start_link(config, opts \\ []) do
+    GenServer.start_link(__MODULE__, config, opts)
+  end
+
+  @doc """
+  Returns a config list from given values.
+
+  ##Usage
+  ```elixir
+  iex(x)> config = MonHandler.get_config(manager, YourEventHandler)
+  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  ```
+  Or
+  ```elixir
+  iex(x)> config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
+  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  ```
+  """
+  @spec get_config(GenEvent.manager, GenEvent.handler, term) :: config
+  def get_config(manager, event_handler, args \\ []) do
+    [manager: manager, handler: event_handler, args: args]
   end
 
   @doc false
@@ -86,7 +149,7 @@ defmodule MonHandler do
   end
 
   @doc false
-  def handle_info({:gen_event_EXIT, _handler, {:swapped, new_handler, pid}}, config) do
+  def handle_info({:gen_event_EXIT, _handler, {:swapped, _new_handler, _pid}}, config) do
     {:stop, :handler_swapped, config}
   end
 
@@ -104,6 +167,6 @@ defmodule MonHandler do
   end
 
   defp start_handler(config) do
-    GenEvent.add_mon_handler(config[:manager], config[:handler], config[:handler_args])
+    GenEvent.add_mon_handler(config[:manager], config[:handler], config[:args])
   end
 end
