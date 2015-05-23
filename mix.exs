@@ -24,7 +24,7 @@ defmodule MonHandler.Mixfile do
       files: ["lib", "mix.exs", "README.md", "LICENSE"],
       contributors: ["Rodney Norris"],
       licenses: ["MIT"],
-      links: [{"Github", "https://github.com/tattdcodemonkey/mon_handler"}]
+      links: %{"GitHub" => "https://github.com/tattdcodemonkey/mon_handler"}
     ]
   end
 end
