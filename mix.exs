@@ -6,6 +6,7 @@ defmodule MonHandler.Mixfile do
      version: "1.0.0",
      elixir: "~> 1.0",
      deps: deps,
+     description: description,
      package: package]
   end
 
@@ -17,6 +18,18 @@ defmodule MonHandler.Mixfile do
     [
       {:mock, only: :test}
     ]
+  end
+
+  defp description do
+    """
+    A minimal GenServer that monitors a given GenEvent handler.
+
+    This server will handle exits of the Handler and attempt to re-add it
+    to the manager when unexpected exits occur.
+
+    Exits for :normal, :shutdown or :swapped reasons will not attempt a re-add to
+    the manager.
+    """
   end
 
   defp package do
