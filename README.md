@@ -7,9 +7,9 @@ To use simply call `add_mon_handler` or `start_link` with the `GenEvent` event m
 
 ```elixir
 iex(x)> {:ok, manager} = GenEvent.start_link
-{:ok, #PID<X.X.X>}
+{:ok, #PID<X.Y.Z>}
 iex(x)> {:ok, mon_han} = MonHandler.start_link(manager, YourEventHandler, event_handler_args, gen_server_args)
-{:ok, #PID<X.X.X>}
+{:ok, #PID<X.Y.Z>}
 iex(x)> GenEvent.notify(manager, {:your_event, "some data"})
 :ok
 iex(x)> MonHandler.remove_handler(mon_han)
