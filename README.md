@@ -15,5 +15,9 @@ iex(x)> GenEvent.notify(manager, {:your_event, "some data"})
 iex(x)> MonHandler.remove_handler(mon_han)
 :ok  
 ```
-
+or to start from a supervisor:
+```elixir
+mon_handler_config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
+supervise([worker(MonHandler, [mon_handler_config, []])], [strategy: :one_for_one])
+```
 `MonHanlder` will handle messages from the event manager if the event handler terminates. For normal terminations `MonHandler` will stop. For terminations due to errors `MonHandler` will re-add the event handler to the event manager.
