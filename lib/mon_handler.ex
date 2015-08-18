@@ -13,22 +13,22 @@ defmodule MonHandler do
   ## Usage
   ```elixir
   iex(x)> {:ok, manager} = GenEvent.start_link
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   iex(x)> {:ok, mon_han} = MonHandler.add_mon_handler(manager, YourEventHandler, event_handler_args)
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   ```
 
   With start_link
 
   ```elixir
   iex(x)> {:ok, manager} = GenEvent.start_link
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   iex(x)> event_handler_args = []
   []
   iex(x)> config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
-  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  [manager: #PID<X.Y.Z>, handler: YourEventHandler, args: []]
   iex(x)> {:ok, mon_han} = MonHandler.start_link(config, gen_server_opts)
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   ```
 
   Within Supervisor
@@ -62,9 +62,9 @@ defmodule MonHandler do
   ## Usage
   ```elixir
   iex(x)> {:ok, manager} = GenEvent.start_link
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   iex(x)> {:ok, mon_han} = MonHandler.add_mon_handler(manager, YourEventHandler, event_handler_args)
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   ```
   """
   @spec add_mon_handler(GenEvent.manager, GenEvent.handler, term) :: GenServer.on_start
@@ -80,9 +80,9 @@ defmodule MonHandler do
   ## Usage
   ```elixir
   iex(x)> {:ok, manager} = GenEvent.start_link
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   iex(x)> {:ok, mon_han} = MonHandler.add_mon_handler(manager, YourEventHandler, event_handler_args)
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   iex(x)> MonHandler.remove_handler(mon_han)
   :ok
   ```
@@ -103,13 +103,13 @@ defmodule MonHandler do
   ## Usage
   ```elixir
   iex(x)> {:ok, manager} = GenEvent.start_link
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   iex(x)> event_handler_args = []
   []
   iex(x)> config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
-  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  [manager: #PID<X.Y.Z>, handler: YourEventHandler, args: []]
   iex(x)> {:ok, mon_han} = MonHandler.start_link(config, gen_server_opts)
-  {:ok, #PID<X.X.X>}
+  {:ok, #PID<X.Y.Z>}
   ```
   """
   @spec start_link(config, GenServer.options) :: GenServer.on_start
@@ -123,12 +123,12 @@ defmodule MonHandler do
   ##Usage
   ```elixir
   iex(x)> config = MonHandler.get_config(manager, YourEventHandler)
-  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  [manager: #PID<X.Y.Z>, handler: YourEventHandler, args: []]
   ```
   Or
   ```elixir
   iex(x)> config = MonHandler.get_config(manager, YourEventHandler, event_handler_args)
-  [manager: #PID<X.X.X>, handler: YourEventHandler, args: []]
+  [manager: #PID<X.Y.Z>, handler: YourEventHandler, args: []]
   ```
   """
   @spec get_config(GenEvent.manager, GenEvent.handler, term) :: config

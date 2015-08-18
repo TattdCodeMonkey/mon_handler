@@ -16,7 +16,8 @@ defmodule MonHandler.Mixfile do
 
   defp deps do
     [
-      {:mock, only: :test}
+      {:mock, only: :test},
+      {:dialyze, optional: true}
     ]
   end
 
