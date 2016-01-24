@@ -3,7 +3,7 @@ defmodule MonHandler.Mixfile do
 
   def project do
     [app: :mon_handler,
-     version: "1.0.1",
+     version: "1.0.2",
      elixir: "~> 1.0",
      deps: deps,
      description: description,
@@ -16,8 +16,8 @@ defmodule MonHandler.Mixfile do
 
   defp deps do
     [
-      {:mock, only: :test},
-      {:dialyze, optional: true}
+      {:mock, "~> 0.1.1", only: :test},
+      {:dialyze, "~> 0.2.0", optional: true}
     ]
   end
 
@@ -36,7 +36,7 @@ defmodule MonHandler.Mixfile do
   defp package do
     [
       files: ["lib", "mix.exs", "README.md", "LICENSE"],
-      contributors: ["Rodney Norris"],
+      maintainers: ["Rodney Norris"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/tattdcodemonkey/mon_handler"}
     ]
