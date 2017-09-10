@@ -17,7 +17,6 @@ defmodule MonHandler.Mixfile do
   defp deps do
     [
       {:mock, "~> 0.1.1", only: :test},
-      {:dialyze, "~> 0.2.0", optional: true},
       {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
