@@ -1,5 +1,7 @@
 MonHandler - Monitored Event Handler
 ==========
+[![Hex version](https://img.shields.io/hexpm/v/mon_handler.svg "Hex
+version")](https://hex.pm/packages/mon_handler)
 
 This is a minimal `GenServer` module that is used to monitor an event handler.
 
