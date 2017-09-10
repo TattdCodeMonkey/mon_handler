@@ -94,7 +94,7 @@ defmodule MonHandlerTest do
       opts = [name: HandlerMonitor]
 
       MonHandler.get_config(mgr,handler, args)
-      |> MonHandler.start_link opts
+      |> MonHandler.start_link(opts)
 
       assert called GenServer.start_link(MonHandler, [
         manager: mgr,
@@ -156,11 +156,7 @@ defmodule MonHandlerTest do
         handler: handler,
         args: args
       ]
-      MonHandler.init([
-        manager: mgr,
-        handler: handler,
-        args: args
-      ])
+      MonHandler.init(config)
 
       assert called GenEvent.add_mon_handler(mgr, handler, args)
     end

@@ -5,9 +5,9 @@ defmodule MonHandler.Mixfile do
     [app: :mon_handler,
      version: "1.0.3",
      elixir: "~> 1.0",
-     deps: deps,
-     description: description,
-     package: package]
+     deps: deps(),
+     description: description(),
+     package: package()]
   end
 
   def application do
@@ -17,7 +17,8 @@ defmodule MonHandler.Mixfile do
   defp deps do
     [
       {:mock, "~> 0.1.1", only: :test},
-      {:dialyze, "~> 0.2.0", optional: true}
+      {:dialyze, "~> 0.2.0", optional: true},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 
